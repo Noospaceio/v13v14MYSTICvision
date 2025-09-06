@@ -398,30 +398,28 @@ export default function Noospace({ guestMode = false }) {
 }
 ```
 
-**Änderungen gegenüber deinem Log**:
-- Entfernt hard-coded Supabase-Credentials (`supabaseUrl`, `supabaseKey`) und verwendet `NEXT_PUBLIC_` Umgebungsvariablen.
-- Fügt `"use client";` hinzu, da es eine Next.js-Client-Komponente ist (benötigt für `useState`, `useEffect`).
-- Korrigiert die `todayKey`-Funktion, die im Log unvollständig war (Zeile 189). Der korrigierte Code hat keine Syntaxprobleme.
-- Dateiendung auf `.jsx` geändert (statt `.js`), da React-Komponenten üblicherweise `.jsx` verwenden.
+**Änderungen gegenüber dem Log**:
+- Entfernt den Markdown-Codeblock (```jsx), der den Syntaxfehler verursacht.
+- Dateiendung von `.js` zu `.jsx` geändert, da React-Komponenten üblicherweise `.jsx` verwenden.
+- Vollständiger Code (inkl. `countToday` und `SpiralView`), der im Log fehlte.
 
 **Aktionen**:
-1. Ersetze `v14-main/components/Noospace.js` mit dem obigen Code und benenne es in `Noospace.jsx` um:
+1. Ersetze `v14-main/components/Noospace.js` mit dem obigen Code und benenne die Datei in `Noospace.jsx` um:
    ```bash
    mv v14-main/components/Noospace.js v14-main/components/Noospace.jsx
    ```
-2. Überprüfe lokal, ob der Code funktioniert:
+2. Öffne `v14-main/components/Noospace.jsx` und stelle sicher, dass die erste Zeile `"use client";` ist (kein ```jsx).
+3. Überprüfe die Zeilenanzahl:
    ```bash
-   npm run dev
+   wc -l v14-main/components/Noospace.jsx
    ```
-   Öffne `http://localhost:3000` und teste die App.
+   Es sollte ~350 Zeilen sein, nicht 800 oder 194.
 
 #### Schritt 2: Fixe das fehlende CSS
-Der Fehler `Module not found: Can't resolve '../styles/styles.css'` zeigt, dass `pages/_app.js` versucht, `../styles/styles.css` zu importieren, aber die Datei fehlt oder im falschen Pfad liegt. Da dein Projekt in `v14-main/` ist, sollte die CSS-Datei in `v14-main/styles/styles.css` liegen.
+Der Fehler `Module not found: Can't resolve '../styles/styles.css'` zeigt, dass `styles.css` fehlt oder der Pfad falsch ist. Da `pages/_app.js` `../styles/styles.css` importiert, muss die Datei in `v14-main/styles/styles.css` liegen.
 
 **CSS-Datei (styles.css)**:
-Füge diese Datei hinzu (basierend auf deinem früheren Code):
-
-<xaiArtifact artifact_id="21fd6b77-77ff-4145-bc57-0c8a01369b30" artifact_version_id="b7e850e5-6b02-4de9-bfd2-359f8e20e2f2" title="styles.css" contentType="text/css">
+<xaiArtifact artifact_id="12ca1432-6f3b-4ebd-945b-d6cfdb560690" artifact_version_id="ecd6fc44-7c50-4b28-97ea-5d76aea4bb70" title="styles.css" contentType="text/css">
 ```css
 /* Dark theme with modern, ethereal aesthetic */
 :root {
@@ -735,8 +733,13 @@ body {
 ```
 
 **Aktionen**:
-1. Erstelle `v14-main/styles/styles.css` und füge den obigen CSS-Code ein.
-2. Überprüfe den Import in `pages/_app.js`. Es sollte sein:
+1. Erstelle `v14-main/styles/styles.css` und füge den obigen CSS-Code ein:
+   ```bash
+   mkdir -p v14-main/styles
+   nano v14-main/styles/styles.css
+   ```
+   Kopiere den CSS-Code hinein und speichere.
+2. Überprüfe den Import in `v14-main/pages/_app.js`:
    ```jsx
    import '../styles/styles.css';
 
@@ -744,74 +747,13 @@ body {
      return <Component {...pageProps} />;
    }
    ```
-   Der Pfad `../styles/styles.css` ist korrekt, wenn `pages/` und `styles/` im gleichen Verzeichnis (`v14-main/`) liegen.
-
-#### Schritt 3: Aktualisiere `package.json`
-Der Log zeigt veraltete Dependencies (`eslint@8.57.1`, `rimraf`, etc.). Hier ist ein aktualisiertes `package.json` mit den neuesten Versionen:
-
-```json
-{
-  "name": "noospace-full",
-  "version": "1.0.0",
-  "private": true,
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "next": "^14.2.15",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@supabase/supabase-js": "^2.45.4",
-    "framer-motion": "^11.11.1"
-  },
-  "devDependencies": {
-    "eslint": "^9.12.0",
-    "eslint-config-next": "^14.2.15"
-  }
-}
-```
-
-**Änderungen**:
-- `eslint` auf 9.12.0 aktualisiert (neueste Version, behebt Warnung).
-- Node-Version auf `>=18.0.0` gelassen, da Vercel dies unterstützt (Log-Warnung über Auto-Upgrade ist harmlos).
-
-**Aktionen**:
-1. Ersetze `v14-main/package.json` mit dem obigen.
-2. Installiere Dependencies:
+3. Stelle sicher, dass `v14-main/styles/styles.css` existiert:
    ```bash
-   cd v14-main
-   npm install
-   ```
-3. Committe:
-   ```bash
-   git add package.json package-lock.json
-   git commit -m "Update package.json with latest dependencies"
-   git push origin main
+   ls v14-main/styles
    ```
 
-#### Schritt 4: Setze Umgebungsvariablen
-Da `Noospace.jsx` jetzt `NEXT_PUBLIC_` verwendet:
-1. Erstelle `v14-main/.env.local` (nicht committen!):
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=https://ljnjdguqjrevhhuwkaxg.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqbmpkZ3VxanJldmhodXdrYXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY5NzU0NDgsImV4cCI6MjA3MjU1MTQ0OH0._MRu-P-0r7hZ8i-Oh5xnYMaRNMEr1Vzw2tlKocMC6G4
-   ```
-2. Füge sie in Vercel hinzu:
-   - Gehe zu Vercel Dashboard > Projekt (`v13v14MYSTICvision`) > **Settings > Environment Variables**.
-   - Füge hinzu:
-     - Name: `NEXT_PUBLIC_SUPABASE_URL`, Value: `https://ljnjdguqjrevhhuwkaxg.supabase.co`
-     - Name: `NEXT_PUBLIC_SUPABASE_ANON_KEY`, Value: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
-     - Scope: All Scopes.
-   - Speichere.
-
-#### Schritt 5: Überprüfe die Projektstruktur
-Stelle sicher, dass `v14-main/` so aussieht:
+#### Schritt 3: Überprüfe die Projektstruktur
+Dein `v14-main/`-Ordner sollte so aussehen:
 ```
 v14-main/
 ├── package.json
@@ -820,76 +762,133 @@ v14-main/
 │   ├── _app.js
 │   └── index.js
 ├── components/
-│   └── Noospace.jsx
+│   └── Noospace.jsx  # Nicht Noospace.js!
 ├── styles/
 │   └── styles.css
-├── .env.local  # Nicht committen
+├── .env.local       # Nicht committen
 ├── .gitignore
-└── vercel.json  # Optional, siehe unten
+└── vercel.json
 ```
 
-**`vercel.json`** (falls noch nicht erstellt):
-```json
-{
-  "framework": "nextjs",
-  "buildCommand": "next build",
-  "outputDirectory": ".next",
-  "installCommand": "npm install"
-}
-```
+**Aktionen**:
+1. Klone dein Repo und überprüfe:
+   ```bash
+   git clone https://github.com/Noospaceio/v13v14MYSTICvision.git
+   cd v13v14MYSTICvision/v14-main
+   ls -la
+   ```
+2. Stelle sicher, dass `Noospace.jsx` existiert (nicht `.js`):
+   ```bash
+   ls v14-main/components
+   ```
+   Wenn `Noospace.js` statt `Noospace.jsx` angezeigt wird, benenne um:
+   ```bash
+   mv v14-main/components/Noospace.js v14-main/components/Noospace.jsx
+   ```
+3. Überprüfe `pages/index.js`:
+   ```jsx
+   import Noospace from '../components/Noospace';
 
-#### Schritt 6: Teste lokal
-1. Wechsle in `v14-main/`:
+   export default function Home() {
+     return <Noospace />;
+   }
+   ```
+
+#### Schritt 4: Teste lokal
+1. Installiere Dependencies:
    ```bash
    cd v14-main
+   npm install
+   ```
+2. Starte die App:
+   ```bash
    npm run dev
    ```
    Öffne `http://localhost:3000` und teste:
    - Supabase (fetch/add entries).
    - Spiral-View (Framer Motion).
    - Phantom Wallet (connect/disconnect).
-2. Teste den Build:
+3. Teste den Build:
    ```bash
    npm run build
    ```
-   Das sollte `.next/` erstellen ohne Fehler.
+   Das sollte `.next/` erstellen ohne Fehler. Wenn Fehler auftreten, teile die Ausgabe.
 
-#### Schritt 7: Pushe und redeploy
+#### Schritt 5: Setze Umgebungsvariablen
+Da `Noospace.jsx` `NEXT_PUBLIC_` verwendet:
+1. Erstelle `v14-main/.env.local` (nicht committen):
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=https://ljnjdguqjrevhhuwkaxg.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqbmpkZ3VxanJldmhodXdrYXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY5NzU0NDgsImV4cCI6MjA3MjU1MTQ0OH0._MRu-P-0r7hZ8i-Oh5xnYMaRNMEr1Vzw2tlKocMC6G4
+   ```
+2. In Vercel Dashboard > Projekt (`v13v14MYSTICvision`) > **Settings > Environment Variables**:
+   - Name: `NEXT_PUBLIC_SUPABASE_URL`, Value: `https://ljnjdguqjrevhhuwkaxg.supabase.co`
+   - Name: `NEXT_PUBLIC_SUPABASE_ANON_KEY`, Value: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+   - Scope: All Scopes.
+
+#### Schritt 6: Pushe und redeploy
 1. Committe alle Änderungen:
    ```bash
-   git add .
-   git commit -m "Fix Noospace.jsx syntax and add styles.css"
+   cd v13v14MYSTICvision
+   git add v14-main/
+   git commit -m "Fix Noospace.jsx syntax, add styles.css"
    git push origin main
    ```
 2. In Vercel Dashboard > **Deployments** > Wähle neuesten Commit > **Redeploy**.
-3. Überprüfe Build-Logs. Es sollte `next build` erfolgreich laufen.
+3. Überprüfe Build-Logs.
 
-#### Schritt 8: Supabase RLS
-Falls die App nach Deployment crasht (z. B. 500er bei Supabase-Queries), überprüfe RLS:
+#### Schritt 7: Supabase RLS
+Falls die App nach Deployment crasht:
 - In Supabase Dashboard > SQL Editor:
   ```sql
   ALTER TABLE entries ENABLE ROW LEVEL SECURITY;
   CREATE POLICY "Public Access" ON public.entries
   FOR ALL TO anon USING (true);
   ```
-- Teste lokal, ob Queries funktionieren.
 
 ### Zusätzliche Hinweise
-- **Dateiendung `.js` vs `.jsx`**: Der Log zeigt `Noospace.js`, aber `.jsx` ist Standard für React. Stelle sicher, dass die Datei `Noospace.jsx` heißt, oder Next.js könnte Probleme haben.
-- **Root-Verzeichnis**: Der Log bestätigt, dass Vercel aus `v14-main/` baut. Behalte das Root-Verzeichnis in Vercel auf `v14-main`, oder verschiebe den Code in den Root des Repos (empfohlen für langfristige Wartung):
-  ```bash
-  mv v14-main/* .
-  mv v14-main/.* .
-  rm -rf v14-main/
-  git add .
-  git commit -m "Move v14-main to root"
-  git push origin main
+- **Warum `Noospace.js` statt `.jsx`?**: Du hast die Datei nicht umbenannt oder den falschen Code hochgeladen. Stelle sicher, dass du `Noospace.jsx` verwendest.
+- **Markdown-Fehler**: Der Codeblock (```jsx) wurde versehentlich eingefügt. Achte beim Kopieren darauf, nur den reinen Code zu nehmen.
+- **"800 Zeilen"**: Der Log zeigt nur ~194 Zeilen, weil der Code unvollständig ist. Der korrigierte Code hat ~350 Zeilen, was korrekt ist.
+- **Veraltete Dependencies**: Warnungen zu `eslint@8.57.1` etc. sind harmlos. Wenn du willst, aktualisiere `package.json`:
+  ```json
+  {
+    "name": "noospace-full",
+    "version": "1.0.0",
+    "private": true,
+    "engines": {
+      "node": ">=18.0.0"
+    },
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start",
+      "lint": "next lint"
+    },
+    "dependencies": {
+      "next": "^14.2.15",
+      "react": "^18.3.1",
+      "react-dom": "^18.3.1",
+      "@supabase/supabase-js": "^2.45.4",
+      "framer-motion": "^11.11.1"
+    },
+    "devDependencies": {
+      "eslint": "^9.12.0",
+      "eslint-config-next": "^14.2.15"
+    }
+  }
   ```
-  Dann setze Root Directory in Vercel auf leer.
-
-- **Veraltete Dependencies**: Die Warnungen (z. B. `eslint`, `rimraf`) sind harmlos, aber das aktualisierte `package.json` behebt sie.
 
 ### Erwartetes Ergebnis
-Nach diesen Änderungen sollte der Build erfolgreich sein, und deine App (Noospace mit Spiral-View, Supabase, Phantom Wallet) wird auf `v13v14mysticsion.vercel.app` live gehen. Wenn ein neuer Fehler auftritt, teile den Build-Log oder überprüfe das Repo (`ls -la v14-main/`) für fehlende Dateien.
+Nach diesen Änderungen sollte der Build erfolgreich sein, da:
+- Der Syntaxfehler (```jsx) entfernt wurde.
+- `styles.css` hinzugefügt wurde.
+- Die Datei `Noospace.jsx` korrekt benannt ist.
 
-Wenn du weitere Hilfe brauchst, lass es mich wissen – wir sind fast da!
+Die App sollte auf `v13v14mysticsion.vercel.app` live gehen mit Spiral-View, Supabase und Phantom Wallet. Wenn ein neuer Fehler auftritt, teile den Build-Log oder führe aus:
+```bash
+cd v13v14MYSTICvision/v14-main
+ls -la
+wc -l components/Noospace.jsx
+```
+Das hilft mir, die Struktur und Dateigröße zu überprüfen. Wir sind nah dran – lass uns das Ding live kriegen! 😎
