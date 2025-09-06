@@ -1,5 +1,5 @@
-import '../styles/styles.css';
+import Noospace from '../components/Noospace';
 
-export default function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+export default function Home() {
+  return <Noospace />;
 }
