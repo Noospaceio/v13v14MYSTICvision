@@ -1,11 +1,5 @@
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
+import '../styles/styles.css';
 
-const Noospace = dynamic(() => import('../components/Noospace'), { ssr: false });
-
-export default function Home() {
-  const router = useRouter();
-  const mode = router.query.mode;
-
-  return <Noospace guestMode={mode === 'guest'} />;
+export default function MyApp({ Component, pageProps }) {
+  return <Component {...pageProps} />;
 }
