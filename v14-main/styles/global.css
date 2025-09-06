@@ -1,12 +1,294 @@
-:root{--bg:#0b0b0f;--panel:#0f1720;--muted:#9aa0a6;--accent:#f8f1d8;--green:#32d74b}
-*{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
-body{margin:0;background:var(--bg);color:#e6eef6}
-.wrap{min-height:100vh;display:flex;flex-direction:column}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
-.brand{display:flex;align-items:center;gap:10px}.title{font-weight:700;font-size:18px}.controls{display:flex;align-items:center;gap:16px}.btns button{margin-right:6px;padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#dfe7ef}.btns .active{background:#e6eef6;color:#071025}.connect{padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#dfe7ef}.main{display:grid;grid-template-columns:1fr 1.4fr;gap:20px;width:100%;max-width:1100px;margin:26px auto;padding:0 20px}.composer{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)} .composer input[type=text], .composer textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}.composer input{height:44px}.composer textarea{min-height:90px;resize:vertical}.row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}.inscribe{background:#e6eef6;color:#071025;padding:8px 14px;border-radius:10px;border:0}.viewer{min-height:400px}.list{display:flex;flex-direction:column;gap:12px}.item{display:flex;gap:12px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);align-items:center}.tag{display:inline-block;margin-right:6px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px}.spiral{position:relative;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border-radius:12px;padding:16px;overflow:hidden}.bubble{position:absolute;width:220px;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02)}.err{color:#ff8b8b;margin-top:8px}
+/* Global styles */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #e0e0e0;
+  line-height: 1.5;
+}
 
-/* Connected banner */
-.connected-banner{margin-left:12px;color:var(--green);font-weight:600;font-size:14px}
+/* Wrap container */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-/* small responsive */
-@media(max-width:900px){.main{grid-template-columns:1fr;}.spiral{height:360px}}
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  font-size: 24px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.btns button {
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+.btns button.active,
+.btns button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.wallet .connect,
+.wallet .x,
+.inscribe,
+.refresh {
+  background: linear-gradient(45deg, #4b6cb7, #182848);
+  border: none;
+  padding: 8px 16px;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.wallet .connect:hover,
+.wallet .x:hover,
+.inscribe:hover,
+.refresh:hover {
+  transform: scale(1.05);
+  background: linear-gradient(45deg, #6b8dd6, #2a4066);
+}
+
+.connected {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #00ff00;
+  border-radius: 50%;
+}
+
+.addr {
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.connected-banner {
+  font-size: 12px;
+  color: #a0a0ff;
+}
+
+/* Composer */
+.composer {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.composer input,
+.composer textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 10px;
+  color: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  resize: vertical;
+}
+
+.composer textarea {
+  min-height: 100px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hint {
+  font-size: 14px;
+  color: #a0a0ff;
+}
+
+.err {
+  color: #ff6b6b;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Viewer - Scroll View */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+.item:hover {
+  transform: translateY(-2px);
+}
+
+.left, .right {
+  display: flex;
+  align-items: center;
+}
+
+.sym2 {
+  font-size: 20px;
+}
+
+.body {
+  flex: 1;
+}
+
+.text {
+  font-size: 16px;
+}
+
+.tags {
+  display: flex;
+  gap: 5px;
+  margin: 5px 0;
+}
+
+.tag {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tag:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.meta {
+  font-size: 12px;
+  color: #a0a0a0;
+}
+
+.right button {
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  cursor: pointer;
+}
+
+.right .del {
+  color: #ff6b6b;
+}
+
+/* Viewer - Spiral View */
+.spiral {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+}
+
+.bubble {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  padding: 10px;
+  border-radius: 8px;
+  width: 200px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sym {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.txt {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.meta {
+  font-size: 12px;
+  color: #a0a0a0;
+}
+
+.bubble .actions button {
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.bubble .actions .del {
+  color: #ff6b6b;
+}
+
+.muted {
+  text-align: center;
+  color: #a0a0a0;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .wrap {
+    padding: 10px;
+  }
+  .topbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .spiral {
+    height: 400px;
+  }
+  .bubble {
+    width: 150px;
+    font-size: 12px;
+  }
+}
